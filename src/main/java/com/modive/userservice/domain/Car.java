@@ -28,8 +28,19 @@ public class Car {
     @Column(nullable = false)
     private String number;
 
+    @Column(nullable = false)
+    private boolean active;
+
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createDateTime;
 
+    public static Car of(final User user, final String number) {
+        return Car.builder()
+                .user(user)
+                .number(number)
+                .active(true)
+                .createDateTime(LocalDateTime.now())
+                .build();
+    }
 }

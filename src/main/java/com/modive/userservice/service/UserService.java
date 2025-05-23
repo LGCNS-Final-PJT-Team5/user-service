@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,20 +34,11 @@ public class UserService {
         return UserResponse.of(userRepository.findByNickname(nickname));
     }
 
-    public UserListResponse getAllUserNicknames() {
-        List<User> allUsers = userRepository.findAll();
-        List<String> allUserNicknames= allUsers.stream()
-                .map(User::getNickname)
-                .filter(Objects::nonNull) // null 닉네임 필터링
-                .toList();
-        return UserListResponse.of(allUserNicknames);
-    }
-
     @Transactional
-    public String updateNickname(final String nickname) {
+    public void updateNickname(final String nickname) {
         User user = userRepository.findByUserId(userContextUtil.getUserId());
         user.setNickname(nickname);
-        return userRepository.saveAndFlush(user).getNickname();
+        userRepository.saveAndFlush(user);
     }
 
     @Transactional
@@ -82,9 +72,22 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUserAlarm(Long userId, boolean alarm) {
-        User user = userRepository.findById(userId)
+    public void updateUserAlarm(boolean alarm) {
+        User user = userRepository.findById(userContextUtil.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         user.setAlarm(alarm);
+    }
+
+    public String getInterest() {
+        User user = userRepository.findById(userContextUtil.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return user.getInterest();
+    }
+
+    @Transactional
+    public void updateUserInterest(String interest) {
+        User user = userRepository.findById(userContextUtil.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        user.setInterest(interest);
     }
 }

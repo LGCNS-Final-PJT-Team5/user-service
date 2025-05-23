@@ -1,14 +1,12 @@
 package com.modive.userservice.controller;
 
-import com.modive.userservice.dto.request.AlarmRequest;
-import com.modive.userservice.dto.request.CarNumberRequest;
-import com.modive.userservice.dto.request.NicknameRequest;
-import com.modive.userservice.dto.request.RewardRequest;
+import com.modive.userservice.dto.request.*;
 import com.modive.userservice.dto.response.ApiResponse;
 import com.modive.userservice.dto.response.CarListResponse;
 import com.modive.userservice.dto.response.UserListResponse;
 import com.modive.userservice.dto.response.UserResponse;
 import com.modive.userservice.repository.UserRepository;
+import com.modive.userservice.service.AdminService;
 import com.modive.userservice.service.CarService;
 import com.modive.userservice.service.UserService;
 import com.modive.userservice.util.UserUtil;
@@ -27,6 +25,7 @@ public class UserController {
     private final UserRepository userRepository;
 
     private final CarService carService;
+    private final AdminService adminService;
 
     @GetMapping("/me")
     public ApiResponse<UserResponse> myInfo() {
@@ -50,8 +49,8 @@ public class UserController {
     }
 
     @GetMapping("/list")
-    public ApiResponse<UserListResponse> list() {
-        return new ApiResponse<>(HttpStatus.OK, userService.getAllUserNicknames());
+    public ApiResponse<UserListResponse> getUserList() {
+        return new ApiResponse<>(HttpStatus.OK, adminService.getUserList());
     }
 
     @GetMapping("/nickname")
@@ -67,12 +66,11 @@ public class UserController {
         return new ApiResponse<>(HttpStatus.OK);
     }
 
-    @PatchMapping("/{userId}/alarm")
+    @PatchMapping("/alarm")
     public ApiResponse<String> updateUserAlarm(
-            @PathVariable("userId") Long userId,
             @RequestBody AlarmRequest alarm
     ) {
-        userService.updateUserAlarm(userId, alarm.isAlarm());
+        userService.updateUserAlarm(alarm.isAlarm());
         return new ApiResponse<>(HttpStatus.OK);
     }
 
@@ -100,9 +98,30 @@ public class UserController {
 
     @DeleteMapping("/car")
     public ApiResponse<String> deleteCar(
-            @RequestBody final CarNumberRequest request
+            @RequestBody final CarIdRequest request
     ) {
-        carService.deleteCar(request.getNumber());
+        carService.deleteCar(request.getCarId());
+        return new ApiResponse<>(HttpStatus.OK);
+    }
+
+    @PatchMapping("/car")
+    public ApiResponse<String> updateCar(
+            @RequestBody final CarIdRequest request
+    ) {
+        carService.updateCar(request.getCarId());
+        return new ApiResponse<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/interest")
+    public ApiResponse<String> getInterest() {
+        return new ApiResponse<>(HttpStatus.OK, userService.getInterest());
+    }
+
+    @PatchMapping("/interest")
+    public ApiResponse<String> updateInterest(
+            @RequestBody final InterestRequest request
+    ) {
+        userService.updateUserInterest(request.getInterest());
         return new ApiResponse<>(HttpStatus.OK);
     }
 }
