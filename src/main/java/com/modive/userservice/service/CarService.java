@@ -3,6 +3,7 @@ package com.modive.userservice.service;
 import com.modive.userservice.domain.Car;
 import com.modive.userservice.domain.User;
 import com.modive.userservice.domain.CarInfo;
+
 import com.modive.userservice.dto.response.CarListResponse;
 import com.modive.userservice.repository.CarRepository;
 import com.modive.userservice.repository.UserRepository;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
