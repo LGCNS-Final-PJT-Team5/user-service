@@ -27,4 +27,15 @@ public interface CarRepository extends JpaRepository<Car, Long> {
     @Modifying
     @Query("UPDATE Car c SET c.active = true WHERE c.carId = :carId AND c.user.userId = :userId")
     void activateUserCar(@Param("carId") Long carId, @Param("userId") Long userId);
+
+
+    @Query(value = """
+    SELECT
+        COUNT(*) AS total,
+        SUM(CASE WHEN MONTH(DATE(create_date_time)) = MONTH(CURDATE()) THEN 1 ELSE 0 END) AS present,
+        SUM(CASE WHEN MONTH(DATE(create_date_time)) = (MONTH(CURDATE()) + 10) % 12 + 1 THEN 1 ELSE 0 END) AS prior
+    FROM cars
+    """, nativeQuery = true)
+    List<Object[]> countCars();
+
 }

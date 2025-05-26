@@ -1,6 +1,7 @@
 package com.modive.userservice.service;
 
 import com.modive.userservice.domain.User;
+import com.modive.userservice.domain.UserInfo;
 import com.modive.userservice.dto.response.UserListResponse;
 import com.modive.userservice.dto.response.UserResponse;
 import com.modive.userservice.repository.UserRepository;
@@ -25,13 +26,12 @@ public class UserService {
         return UserResponse.of(user);
     }
 
-    public UserResponse getUser(final Long userId) {
-        return UserResponse.of(userRepository.findByUserId(userId)
-        );
+    public UserInfo getUser(final String nickname) {
+        return UserInfo.from(userRepository.findByNickname(nickname));
     }
 
-    public UserResponse getUser(final String nickname) {
-        return UserResponse.of(userRepository.findByNickname(nickname));
+    public UserInfo getUser(final Long userId) {
+        return UserInfo.from(userRepository.findByUserId(userId));
     }
 
     @Transactional
@@ -43,23 +43,23 @@ public class UserService {
 
     @Transactional
     public String deleteUser() {
-        Long userId = userContextUtil.getUserId();
-        Long isDelete = userRepository.deleteUserByUserId(userId);
-        if (Objects.equals(isDelete, userId)) {
+        try {
+            Long userId = userContextUtil.getUserId();
+            User user = userRepository.findByUserId(userId);
+            user.setActive(false);
             return "유저 삭제에 성공했습니다.";
-        }
-        else {
+        } catch (Exception e) {
             return "유저 삭제에 실패했습니다.";
         }
     }
 
     @Transactional
     public String deleteUser(final Long userId) {
-        Long isDelete = userRepository.deleteUserByUserId(userId);
-        if (Objects.equals(isDelete, userId)) {
+        try {
+            User user = userRepository.findByUserId(userId);
+            user.setActive(false);
             return "유저 삭제에 성공했습니다.";
-        }
-        else {
+        } catch (Exception e) {
             return "유저 삭제에 실패했습니다.";
         }
     }
