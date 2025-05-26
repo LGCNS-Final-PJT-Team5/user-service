@@ -1,19 +1,17 @@
 package com.modive.userservice.controller;
 
-import com.modive.userservice.dto.request.AlarmRequest;
-import com.modive.userservice.dto.request.CarNumberRequest;
-import com.modive.userservice.dto.request.NicknameRequest;
-import com.modive.userservice.dto.request.RewardRequest;
-import com.modive.userservice.dto.response.ApiResponse;
-import com.modive.userservice.dto.response.CarListResponse;
-import com.modive.userservice.dto.response.UserListResponse;
-import com.modive.userservice.dto.response.UserResponse;
+import com.modive.userservice.domain.UserInfo;
+import com.modive.userservice.dto.request.*;
+import com.modive.userservice.dto.response.*;
 import com.modive.userservice.repository.UserRepository;
+import com.modive.userservice.service.AdminService;
 import com.modive.userservice.service.CarService;
 import com.modive.userservice.service.UserService;
-import com.modive.userservice.util.UserUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,31 +25,36 @@ public class UserController {
     private final UserRepository userRepository;
 
     private final CarService carService;
+    private final AdminService adminService;
 
     @GetMapping("/me")
     public ApiResponse<UserResponse> myInfo() {
         return new ApiResponse<>(HttpStatus.OK, userService.getUser());
     }
 
+    @PatchMapping("/me/delete")
+    public ApiResponse<String> withdraw() {
+        return new ApiResponse<>(HttpStatus.OK, userService.deleteUser());
+    }
+
     @GetMapping("/{userId}")
-    public ApiResponse<UserResponse> userInfoById(@PathVariable("userId") Long userId) {
+    public ApiResponse<UserInfo> userInfoById(@PathVariable("userId") Long userId) {
         return new ApiResponse<>(HttpStatus.OK, userService.getUser(userId));
     }
 
     @GetMapping
-    public ApiResponse<UserResponse> userInfoByNickname(@RequestParam("search") String search) {
+    public ApiResponse<UserInfo> userInfoByNickname(@RequestParam("search") String search) {
         return new ApiResponse<>(HttpStatus.OK, userService.getUser(search));
     }
 
-    @DeleteMapping("/{userId}")
+    @PatchMapping("/{userId}/delete")
     public ApiResponse<String> deleteUser(@PathVariable("userId") Long userId) {
         return new ApiResponse<>(HttpStatus.OK, userService.deleteUser(userId));
-
     }
 
     @GetMapping("/list")
-    public ApiResponse<UserListResponse> list() {
-        return new ApiResponse<>(HttpStatus.OK, userService.getAllUserNicknames());
+    public ApiResponse<UserListResponse> getUserList() {
+        return new ApiResponse<>(HttpStatus.OK, adminService.getUserList());
     }
 
     @GetMapping("/nickname")
@@ -67,12 +70,11 @@ public class UserController {
         return new ApiResponse<>(HttpStatus.OK);
     }
 
-    @PatchMapping("/{userId}/alarm")
+    @PatchMapping("/alarm")
     public ApiResponse<String> updateUserAlarm(
-            @PathVariable("userId") Long userId,
             @RequestBody AlarmRequest alarm
     ) {
-        userService.updateUserAlarm(userId, alarm.isAlarm());
+        userService.updateUserAlarm(alarm.isAlarm());
         return new ApiResponse<>(HttpStatus.OK);
     }
 
@@ -100,9 +102,72 @@ public class UserController {
 
     @DeleteMapping("/car")
     public ApiResponse<String> deleteCar(
-            @RequestBody final CarNumberRequest request
+            @RequestBody final CarIdRequest request
     ) {
-        carService.deleteCar(request.getNumber());
+        carService.deleteCar(request.getCarId());
         return new ApiResponse<>(HttpStatus.OK);
+    }
+
+    @PatchMapping("/car")
+    public ApiResponse<String> updateCar(
+            @RequestBody final CarIdRequest request
+    ) {
+        carService.updateCar(request.getCarId());
+        return new ApiResponse<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/interest")
+    public ApiResponse<String> getInterest() {
+        return new ApiResponse<>(HttpStatus.OK, userService.getInterest());
+    }
+
+    @PatchMapping("/interest")
+    public ApiResponse<String> updateInterest(
+            @RequestBody final InterestRequest request
+    ) {
+        userService.updateUserInterest(request.getInterest());
+        return new ApiResponse<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/monthly-stats")
+    public ApiResponse<MonthlyStatsResponse> getMonthlyChurnStats() {
+        return new ApiResponse<>(HttpStatus.OK, adminService.getMonthlyStats());
+    }
+
+    @GetMapping("/search")
+    public ApiResponse<UserInfo> searchByEmail(@RequestParam("searchKeyword") String email) {
+        return new ApiResponse<>(HttpStatus.OK, adminService.searchByEmail(email));
+    }
+
+    @GetMapping("/total")
+    public ApiResponse<TotalChangeResponse> getTotalUser() {
+        return new ApiResponse<>(HttpStatus.OK, adminService.getTotalUser());
+    }
+
+    @GetMapping("/total-cars")
+    public ApiResponse<TotalChangeResponse> getTotalCar() {
+        return new ApiResponse<>(HttpStatus.OK, adminService.getTotalCar());
+    }
+
+    @GetMapping("/filter")
+    public ApiResponse<Page<UserInfo>> getUsers(
+            @RequestParam(required = false) Integer minExperience,
+            @RequestParam(required = false) Integer maxExperience,
+            @RequestParam(required = false) Integer accountAgeInMonths,
+            @RequestParam(required = false) Integer active,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int pageSize
+    ) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+
+        Page<UserInfo> userInfos = adminService.findUsers(
+                minExperience,
+                maxExperience,
+                accountAgeInMonths,
+                active,
+                pageable
+        );
+
+        return new ApiResponse<>(HttpStatus.OK, userInfos);
     }
 }

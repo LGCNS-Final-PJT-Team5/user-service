@@ -1,5 +1,6 @@
 package com.modive.userservice.dto.response;
 
+import com.modive.userservice.domain.UserInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,17 +15,17 @@ import java.util.List;
 public class UserListResponse {
 
     private int length;
-    private List<String> usernicknames;
+    private List<UserInfo> userInfos;
 
-    public UserListResponse(List<String> usernicknames) {
-        this.length = usernicknames.size();
-        this.usernicknames = usernicknames;
+    public UserListResponse(List<UserInfo> userInfos) {
+        this.length = userInfos.size();
+        this.userInfos = userInfos;
     }
 
-    public static UserListResponse of(List<String> usernicknames) {
+    public static UserListResponse of(List<UserInfo> userInfos) {
         return UserListResponse.builder()
-                .length(usernicknames.size())
-                .usernicknames(usernicknames)
+                .length(userInfos.size())
+                .userInfos(userInfos)
                 .build();
 
     }
