@@ -16,3 +16,15 @@ healthCheck:
   port: 8080
   initialDelaySeconds: 30
   periodSeconds: 10
+
+# User Service Config
+config:
+  server:
+    port: 8080
+  app:
+    name: user-service
+  jpa:
+    hibernate:
+      ddlauto: ddl-update
+  database:
+    driverclassname: com.mysql.cj.jdbc.Driver
