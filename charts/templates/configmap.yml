@@ -15,7 +15,7 @@ data:
         name: {{ .Values.config.app.name | default "user-service" }}
       jpa:
         hibernate:
-          ddl-auto: {{ .Values.config.jpa.hibernate.ddlauto | default "ddl-update" }}
+          ddl-auto: {{ .Values.config.jpa.hibernate.ddlauto | default "update" }}
       datasource:
         driver-class-name: {{ .Values.config.datasource.driverclassname | default "com.mysql.cj.jdbc.Driver"}}
         url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}

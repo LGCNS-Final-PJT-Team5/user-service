@@ -25,6 +25,6 @@ config:
     name: user-service
   jpa:
     hibernate:
-      ddlauto: ddl-update
+      ddlauto: update
   datasource:
     driverclassname: com.mysql.cj.jdbc.Driver
