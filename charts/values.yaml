@@ -26,5 +26,5 @@ config:
   jpa:
     hibernate:
       ddlauto: ddl-update
-  database:
+  datasource:
     driverclassname: com.mysql.cj.jdbc.Driver
