@@ -140,12 +140,12 @@ public class UserController {
     }
 
     @GetMapping("/total")
-    public ApiResponse<TotalChangeResponse> getTotalUser() {
+    public ApiResponse<TotalUserChangeResponse> getTotalUser() {
         return new ApiResponse<>(HttpStatus.OK, adminService.getTotalUser());
     }
 
     @GetMapping("/total-cars")
-    public ApiResponse<TotalChangeResponse> getTotalCar() {
+    public ApiResponse<TotalCarChangeResponse> getTotalCar() {
         return new ApiResponse<>(HttpStatus.OK, adminService.getTotalCar());
     }
 
