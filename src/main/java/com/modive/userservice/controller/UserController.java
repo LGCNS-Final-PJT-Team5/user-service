@@ -130,7 +130,7 @@ public class UserController {
     }
 
     @GetMapping("/search")
-    public ApiResponse<UserInfo> searchByEmail(@RequestParam("searchKeyword") String email) {
+    public ApiResponse<SearchUserResponse> searchByEmail(@RequestParam("searchKeyword") String email) {
         return new ApiResponse<>(HttpStatus.OK, adminService.searchByEmail(email));
     }
 

@@ -6,6 +6,7 @@ import com.modive.userservice.dto.query.MonthlyActiveStatsDto;
 import com.modive.userservice.dto.query.MonthlyStatsDto;
 import com.modive.userservice.dto.query.TotalCarDto;
 import com.modive.userservice.dto.response.*;
+import com.modive.userservice.exception.UserNotFoundException;
 import com.modive.userservice.repository.CarRepository;
 import com.modive.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,10 +28,22 @@ public class AdminService {
     private final UserRepository userRepository;
     private final CarRepository carRepository;
 
-    public UserInfo searchByEmail(String email) {
+
+//    public UserInfo searchByEmail(String email) {
+//        User user = userRepository.findByEmail(email);
+//        return UserInfo.from(user);
+//    }
+
+    public SearchUserResponse searchByEmail(String email) {
         User user = userRepository.findByEmail(email);
-        return UserInfo.from(user);
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
+        UserInfo userInfo = UserInfo.from(user);
+        List<UserInfo> resultList = Collections.singletonList(userInfo);
+        return new SearchUserResponse(resultList);
     }
+
 
     public UserListResponse getUserList() {
         List<User> allUsers = userRepository.findAll();
