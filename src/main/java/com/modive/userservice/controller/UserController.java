@@ -57,11 +57,6 @@ public class UserController {
         return new ApiResponse<>(HttpStatus.OK, adminService.getUserList());
     }
 
-    @GetMapping("/nickname")
-    public ApiResponse<Boolean> nicknameDuplicateCheck(@RequestParam("search") String nickname) {
-        return new ApiResponse<>(HttpStatus.OK, userRepository.existsByNickname(nickname));
-    }
-
     @PatchMapping("/nickname")
     public ApiResponse<String> updateNickname(
             @RequestBody NicknameRequest request
