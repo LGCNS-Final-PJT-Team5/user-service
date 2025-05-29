@@ -47,7 +47,7 @@ public class UserController {
         return new ApiResponse<>(HttpStatus.OK, userService.getUser(search));
     }
 
-    @PatchMapping("/{userId}/delete")
+    @PostMapping("/{userId}/delete")
     public ApiResponse<String> deleteUser(@PathVariable("userId") Long userId) {
         return new ApiResponse<>(HttpStatus.OK, userService.deleteUser(userId));
     }
