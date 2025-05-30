@@ -9,24 +9,25 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface CarRepository extends JpaRepository<Car, Long> {
+public interface CarRepository extends JpaRepository<Car, UUID> {
 
-    List<Car> findByUserUserId(Long userId);
+    List<Car> findByUserUserId(UUID userId);
 
     Optional<Car> findByNumber(String number);
 
-    Optional<Car> findByCarIdAndUserUserId(Long carId, Long userId);
+    Optional<Car> findByCarIdAndUserUserId(UUID carId, UUID userId);
 
     @Modifying
     @Query("UPDATE Car c SET c.active = false WHERE c.user.userId = :userId")
-    void deactivateAllUserCars(@Param("userId") Long userId);
+    void deactivateAllUserCars(@Param("userId") UUID userId);
 
     // 특정 차량을 활성화
     @Modifying
     @Query("UPDATE Car c SET c.active = true WHERE c.carId = :carId AND c.user.userId = :userId")
-    void activateUserCar(@Param("carId") Long carId, @Param("userId") Long userId);
+    void activateUserCar(@Param("carId") UUID carId, @Param("userId") UUID userId);
 
 
     @Query(value = """

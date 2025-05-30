@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +20,8 @@ public class UserService {
 
     private final UserUtil userContextUtil;
     private final UserRepository userRepository;
+
+
 
     public UserResponse getUser() {
         User user = userRepository.findById(userContextUtil.getUserId())
@@ -30,7 +33,7 @@ public class UserService {
         return UserInfo.from(userRepository.findByNickname(nickname));
     }
 
-    public UserInfo getUser(final Long userId) {
+    public UserInfo getUser(final UUID userId) {
         return UserInfo.from(userRepository.findByUserId(userId));
     }
 
@@ -44,7 +47,7 @@ public class UserService {
     @Transactional
     public String deleteUser() {
         try {
-            Long userId = userContextUtil.getUserId();
+            UUID userId = userContextUtil.getUserId();
             User user = userRepository.findByUserId(userId);
             user.setActive(false);
             return "유저 삭제에 성공했습니다.";
@@ -54,7 +57,7 @@ public class UserService {
     }
 
     @Transactional
-    public String deleteUser(final Long userId) {
+    public String deleteUser(final UUID userId) {
         try {
             User user = userRepository.findByUserId(userId);
             user.setActive(false);
@@ -65,7 +68,7 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUserReward(Long userId, Long reward) {
+    public void updateUserReward(UUID userId, Long reward) {
         User user = userRepository.findByUserId(userId);
         user.setReward(user.getReward() + reward);
         userRepository.saveAndFlush(user);

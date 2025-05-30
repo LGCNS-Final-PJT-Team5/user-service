@@ -7,6 +7,7 @@ import com.modive.userservice.repository.UserRepository;
 import com.modive.userservice.service.AdminService;
 import com.modive.userservice.service.CarService;
 import com.modive.userservice.service.UserService;
+import com.modive.userservice.util.UserUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @Slf4j
 @RestController
 @RequestMapping("/user")
@@ -22,8 +25,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
-    private final UserRepository userRepository;
-
     private final CarService carService;
     private final AdminService adminService;
 
@@ -38,7 +39,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ApiResponse<UserInfo> userInfoById(@PathVariable("userId") Long userId) {
+    public ApiResponse<UserInfo> userInfoById(@PathVariable("userId") UUID userId) {
         return new ApiResponse<>(HttpStatus.OK, userService.getUser(userId));
     }
 
@@ -48,7 +49,7 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}/delete")
-    public ApiResponse<String> deleteUser(@PathVariable("userId") Long userId) {
+    public ApiResponse<String> deleteUser(@PathVariable("userId") UUID userId) {
         return new ApiResponse<>(HttpStatus.OK, userService.deleteUser(userId));
     }
 
@@ -75,7 +76,7 @@ public class UserController {
 
     @PostMapping("/{userId}/reward")
     public ApiResponse<String> updateUserReward(
-            @PathVariable("userId") Long userId,
+            @PathVariable("userId") UUID userId,
             @RequestBody RewardRequest request
     ) {
         userService.updateUserReward(userId, request.getReward());

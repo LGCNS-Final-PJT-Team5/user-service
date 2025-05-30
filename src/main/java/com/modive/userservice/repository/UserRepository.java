@@ -11,9 +11,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, UUID> {
 
     User findByEmail(String email);
 
@@ -23,13 +24,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByNickname(String nickname);
 
-    User findByUserId(Long userId);
+    User findByUserId(UUID userId);
 
     User findByNickname(String nickname);
 
     List<User> findAll();
 
-    Long deleteUserByUserId(Long userId);
+    Long deleteUserByUserId(UUID userId);
 
     @Query(value = """
         SELECT
