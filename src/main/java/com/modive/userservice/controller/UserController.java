@@ -7,6 +7,7 @@ import com.modive.userservice.repository.UserRepository;
 import com.modive.userservice.service.AdminService;
 import com.modive.userservice.service.CarService;
 import com.modive.userservice.service.UserService;
+import com.modive.userservice.util.UserUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @Slf4j
 @RestController
 @RequestMapping("/user")
@@ -22,8 +25,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
-    private final UserRepository userRepository;
-
     private final CarService carService;
     private final AdminService adminService;
 
@@ -38,13 +39,13 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ApiResponse<UserInfo> userInfoById(@PathVariable("userId") Long userId) {
-        return new ApiResponse<>(HttpStatus.OK, userService.getUser(userId));
+    public ApiResponse<UserInfo> userInfoById(@PathVariable("userId") String userId) {
+        return new ApiResponse<>(HttpStatus.OK, userService.getUserByUserId(userId));
     }
 
     @GetMapping
     public ApiResponse<UserInfo> userInfoByNickname(@RequestParam("search") String search) {
-        return new ApiResponse<>(HttpStatus.OK, userService.getUser(search));
+        return new ApiResponse<>(HttpStatus.OK, userService.getUserByNickname(search));
     }
 
     @PostMapping("/{userId}/delete")
@@ -75,7 +76,7 @@ public class UserController {
 
     @PostMapping("/{userId}/reward")
     public ApiResponse<String> updateUserReward(
-            @PathVariable("userId") Long userId,
+            @PathVariable("userId") String userId,
             @RequestBody RewardRequest request
     ) {
         userService.updateUserReward(userId, request.getReward());

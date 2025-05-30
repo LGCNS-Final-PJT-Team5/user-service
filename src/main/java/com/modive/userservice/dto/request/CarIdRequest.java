@@ -2,15 +2,17 @@ package com.modive.userservice.dto.request;
 
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 public class CarIdRequest {
-    private Long carId;
+    private String carId;
 
-    public Long getCarId() {
+    public String getCarId() {
         return carId;
     }
 
-    public void setCarId(Long carId) {
+    public void setCarId(String carId) {
         this.carId = carId;
     }
 }
