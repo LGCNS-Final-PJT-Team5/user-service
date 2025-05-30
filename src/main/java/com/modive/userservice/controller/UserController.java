@@ -48,8 +48,8 @@ public class UserController {
         return new ApiResponse<>(HttpStatus.OK, userService.getUserByNickname(search));
     }
 
-    @PatchMapping("/{userId}/delete")
-    public ApiResponse<String> deleteUser(@PathVariable("userId") String userId) {
+    @PostMapping("/{userId}/delete")
+    public ApiResponse<String> deleteUser(@PathVariable("userId") Long userId) {
         return new ApiResponse<>(HttpStatus.OK, userService.deleteUser(userId));
     }
 
@@ -131,7 +131,7 @@ public class UserController {
     }
 
     @GetMapping("/search")
-    public ApiResponse<UserInfo> searchByEmail(@RequestParam("searchKeyword") String email) {
+    public ApiResponse<SearchUserResponse> searchByEmail(@RequestParam("searchKeyword") String email) {
         return new ApiResponse<>(HttpStatus.OK, adminService.searchByEmail(email));
     }
 
