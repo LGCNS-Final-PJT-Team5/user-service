@@ -39,17 +39,17 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ApiResponse<UserInfo> userInfoById(@PathVariable("userId") UUID userId) {
-        return new ApiResponse<>(HttpStatus.OK, userService.getUser(userId));
+    public ApiResponse<UserInfo> userInfoById(@PathVariable("userId") String userId) {
+        return new ApiResponse<>(HttpStatus.OK, userService.getUserByUserId(userId));
     }
 
     @GetMapping
     public ApiResponse<UserInfo> userInfoByNickname(@RequestParam("search") String search) {
-        return new ApiResponse<>(HttpStatus.OK, userService.getUser(search));
+        return new ApiResponse<>(HttpStatus.OK, userService.getUserByNickname(search));
     }
 
     @PatchMapping("/{userId}/delete")
-    public ApiResponse<String> deleteUser(@PathVariable("userId") UUID userId) {
+    public ApiResponse<String> deleteUser(@PathVariable("userId") String userId) {
         return new ApiResponse<>(HttpStatus.OK, userService.deleteUser(userId));
     }
 
@@ -76,7 +76,7 @@ public class UserController {
 
     @PostMapping("/{userId}/reward")
     public ApiResponse<String> updateUserReward(
-            @PathVariable("userId") UUID userId,
+            @PathVariable("userId") String userId,
             @RequestBody RewardRequest request
     ) {
         userService.updateUserReward(userId, request.getReward());

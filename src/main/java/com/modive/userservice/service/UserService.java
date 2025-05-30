@@ -29,11 +29,11 @@ public class UserService {
         return UserResponse.of(user);
     }
 
-    public UserInfo getUser(final String nickname) {
+    public UserInfo getUserByNickname(final String nickname) {
         return UserInfo.from(userRepository.findByNickname(nickname));
     }
 
-    public UserInfo getUser(final UUID userId) {
+    public UserInfo getUserByUserId(final String userId) {
         return UserInfo.from(userRepository.findByUserId(userId));
     }
 
@@ -47,7 +47,7 @@ public class UserService {
     @Transactional
     public String deleteUser() {
         try {
-            UUID userId = userContextUtil.getUserId();
+            String userId = userContextUtil.getUserId();
             User user = userRepository.findByUserId(userId);
             user.setActive(false);
             return "유저 삭제에 성공했습니다.";
@@ -57,7 +57,7 @@ public class UserService {
     }
 
     @Transactional
-    public String deleteUser(final UUID userId) {
+    public String deleteUser(final String userId) {
         try {
             User user = userRepository.findByUserId(userId);
             user.setActive(false);
@@ -68,7 +68,7 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUserReward(UUID userId, Long reward) {
+    public void updateUserReward(String userId, Long reward) {
         User user = userRepository.findByUserId(userId);
         user.setReward(user.getReward() + reward);
         userRepository.saveAndFlush(user);

@@ -6,13 +6,13 @@ import java.util.UUID;
 
 @Data
 public class CarIdRequest {
-    private UUID carId;
+    private String carId;
 
-    public UUID getCarId() {
+    public String getCarId() {
         return carId;
     }
 
-    public void setCarId(UUID carId) {
+    public void setCarId(String carId) {
         this.carId = carId;
     }
 }

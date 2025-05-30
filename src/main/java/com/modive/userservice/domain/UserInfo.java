@@ -14,7 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserInfo {
-    private UUID userId;
+    private String userId;
     private String nickname;
     private String email;
     private Long experience;

@@ -23,8 +23,8 @@ public class Car {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name="uuid2", strategy = "uuid2")
-    @Column(name = "car_id", columnDefinition = "BINARY(16)")
-    private UUID carId;
+    @Column(name = "car_id", columnDefinition = "VARCHAR(36)")
+    private String carId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

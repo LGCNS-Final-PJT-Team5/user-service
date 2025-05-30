@@ -9,12 +9,12 @@ import java.util.UUID;
 
 @Component
 public class UserUtil {
-    public UUID getUserId() {
+    public String getUserId() {
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         System.out.println(request.getHeader("X-MEMBER-ID"));
         System.out.println(request.getHeader("X-USER-ID"));
-        return UUID.fromString(request.getHeader("X-USER-ID"));
+        return request.getHeader("X-USER-ID");
     }
 
     public String getUserRole() {

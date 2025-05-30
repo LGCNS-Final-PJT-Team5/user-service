@@ -25,7 +25,7 @@ public class CarService {
     private final UserRepository userRepository;
 
     public CarListResponse getCarList() {
-        UUID userId = userContextUtil.getUserId();
+        String userId = userContextUtil.getUserId();
         List<Car> usersCars = carRepository.findByUserUserId(userId);
         List<CarInfo> usersCarNumbers = usersCars.stream()
                 .filter(car -> car.getNumber() != null)
@@ -35,7 +35,7 @@ public class CarService {
     }
 
     public void addCar(String number) {
-        UUID userId = userContextUtil.getUserId();
+        String userId = userContextUtil.getUserId();
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
 
@@ -46,16 +46,16 @@ public class CarService {
         carRepository.save(car);
     }
 
-    public void deleteCar(UUID carId) {
-        UUID userId = userContextUtil.getUserId();
+    public void deleteCar(String carId) {
+        String userId = userContextUtil.getUserId();
         Car car = carRepository.findByCarIdAndUserUserId(carId, userId)
                 .orElseThrow(() -> new IllegalArgumentException("차량을 찾을 수 없습니다."));
         carRepository.delete(car);
     }
 
     @Transactional
-    public void updateCar(UUID carId) {
-        UUID userId = userContextUtil.getUserId();
+    public void updateCar(String carId) {
+        String userId = userContextUtil.getUserId();
         carRepository.deactivateAllUserCars(userId);
         carRepository.activateUserCar(carId, userId);
     }

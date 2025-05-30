@@ -12,7 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CarInfo {
-    private UUID carId;
+    private String carId;
     private String number;
     private boolean active;
 

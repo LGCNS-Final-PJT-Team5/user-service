@@ -14,7 +14,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, UUID> {
+public interface UserRepository extends JpaRepository<User, String> {
 
     User findByEmail(String email);
 
@@ -24,13 +24,13 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     boolean existsByNickname(String nickname);
 
-    User findByUserId(UUID userId);
+    User findByUserId(String userId);
 
     User findByNickname(String nickname);
 
     List<User> findAll();
 
-    Long deleteUserByUserId(UUID userId);
+    Long deleteUserByUserId(String userId);
 
     @Query(value = """
         SELECT

@@ -12,22 +12,22 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface CarRepository extends JpaRepository<Car, UUID> {
+public interface CarRepository extends JpaRepository<Car, String> {
 
-    List<Car> findByUserUserId(UUID userId);
+    List<Car> findByUserUserId(String userId);
 
     Optional<Car> findByNumber(String number);
 
-    Optional<Car> findByCarIdAndUserUserId(UUID carId, UUID userId);
+    Optional<Car> findByCarIdAndUserUserId(String carId, String userId);
 
     @Modifying
     @Query("UPDATE Car c SET c.active = false WHERE c.user.userId = :userId")
-    void deactivateAllUserCars(@Param("userId") UUID userId);
+    void deactivateAllUserCars(@Param("userId") String userId);
 
     // 특정 차량을 활성화
     @Modifying
     @Query("UPDATE Car c SET c.active = true WHERE c.carId = :carId AND c.user.userId = :userId")
-    void activateUserCar(@Param("carId") UUID carId, @Param("userId") UUID userId);
+    void activateUserCar(@Param("carId") String carId, @Param("userId") String userId);
 
 
     @Query(value = """
