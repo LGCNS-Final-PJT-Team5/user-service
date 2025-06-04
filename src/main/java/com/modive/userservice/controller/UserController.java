@@ -49,7 +49,7 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/delete")
-    public ApiResponse<String> deleteUser(@PathVariable("userId") Long userId) {
+    public ApiResponse<String> deleteUser(@PathVariable("userId") String userId) {
         return new ApiResponse<>(HttpStatus.OK, userService.deleteUser(userId));
     }
 
