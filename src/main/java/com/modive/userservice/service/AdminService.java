@@ -5,10 +5,8 @@ import com.modive.userservice.domain.UserInfo;
 import com.modive.userservice.dto.query.MonthlyActiveStatsDto;
 import com.modive.userservice.dto.query.MonthlyStatsDto;
 import com.modive.userservice.dto.query.TotalCarDto;
-import com.modive.userservice.dto.response.MonthlyStatsResponse;
-import com.modive.userservice.dto.response.TotalChangeResponse;
-import com.modive.userservice.dto.response.UserListResponse;
-import com.modive.userservice.dto.response.UserTrend;
+import com.modive.userservice.dto.response.*;
+import com.modive.userservice.exception.UserNotFoundException;
 import com.modive.userservice.repository.CarRepository;
 import com.modive.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,10 +28,22 @@ public class AdminService {
     private final UserRepository userRepository;
     private final CarRepository carRepository;
 
-    public UserInfo searchByEmail(String email) {
+
+//    public UserInfo searchByEmail(String email) {
+//        User user = userRepository.findByEmail(email);
+//        return UserInfo.from(user);
+//    }
+
+    public SearchUserResponse searchByEmail(String email) {
         User user = userRepository.findByEmail(email);
-        return UserInfo.from(user);
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
+        UserInfo userInfo = UserInfo.from(user);
+        List<UserInfo> resultList = Collections.singletonList(userInfo);
+        return new SearchUserResponse(resultList);
     }
+
 
     public UserListResponse getUserList() {
         List<User> allUsers = userRepository.findAll();
@@ -43,7 +53,7 @@ public class AdminService {
         return UserListResponse.of(formattedUsers);
     }
 
-    public TotalChangeResponse getTotalUser() {
+    public TotalUserChangeResponse getTotalUser() {
         Long newUserCount = userRepository.getNewUserCount();
 
         List<YearMonth> last12Months = generateLast12Months();
@@ -99,21 +109,24 @@ public class AdminService {
                 })
                 .toList();
 
-        return TotalChangeResponse.of(
+        TotalChangeResponse totalChangeResponse =  TotalChangeResponse.of(
                 finalUser.get(),
                 prior2Users.get() == 0 ? 1f : (float) priorUsers.get() / prior2Users.get() - 1f
                 );
+        return TotalUserChangeResponse.of(totalChangeResponse);
     }
 
-    public TotalChangeResponse getTotalCar() {
+    public TotalCarChangeResponse getTotalCar() {
         TotalCarDto totalCarDto = convertToStats(carRepository.countCars().get(0));
         long priorCount = totalCarDto.getTotal() - totalCarDto.getPresent();
         long prior2Count = totalCarDto.getTotal() - totalCarDto.getPresent() - totalCarDto.getPrior();
 
-        return TotalChangeResponse.of(
+        TotalChangeResponse totalChangeResponse =  TotalChangeResponse.of(
                 totalCarDto.getTotal(),
                 prior2Count == 0 ? 1f : (float) priorCount / prior2Count - 1f
         );
+
+        return TotalCarChangeResponse.of(totalChangeResponse);
     }
 
     public MonthlyStatsResponse getMonthlyStats() {

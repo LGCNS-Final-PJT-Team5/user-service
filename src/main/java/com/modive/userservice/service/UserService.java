@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -20,17 +21,19 @@ public class UserService {
     private final UserUtil userContextUtil;
     private final UserRepository userRepository;
 
+
+
     public UserResponse getUser() {
         User user = userRepository.findById(userContextUtil.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         return UserResponse.of(user);
     }
 
-    public UserInfo getUser(final String nickname) {
+    public UserInfo getUserByNickname(final String nickname) {
         return UserInfo.from(userRepository.findByNickname(nickname));
     }
 
-    public UserInfo getUser(final Long userId) {
+    public UserInfo getUserByUserId(final String userId) {
         return UserInfo.from(userRepository.findByUserId(userId));
     }
 
@@ -44,7 +47,7 @@ public class UserService {
     @Transactional
     public String deleteUser() {
         try {
-            Long userId = userContextUtil.getUserId();
+            String userId = userContextUtil.getUserId();
             User user = userRepository.findByUserId(userId);
             user.setActive(false);
             return "유저 삭제에 성공했습니다.";
@@ -54,7 +57,7 @@ public class UserService {
     }
 
     @Transactional
-    public String deleteUser(final Long userId) {
+    public String deleteUser(final String userId) {
         try {
             User user = userRepository.findByUserId(userId);
             user.setActive(false);
@@ -65,7 +68,7 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUserReward(Long userId, Long reward) {
+    public void updateUserReward(String userId, Long reward) {
         User user = userRepository.findByUserId(userId);
         user.setReward(user.getReward() + reward);
         userRepository.saveAndFlush(user);
