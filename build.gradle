@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.4.5'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'jacoco'
 }
 
 ext {
@@ -38,6 +39,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+
     // spring cloud
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
@@ -47,6 +49,10 @@ dependencies {
 
     // mysql
     implementation 'mysql:mysql-connector-java:8.0.33'
+
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+
 }
 
 dependencyManagement {
@@ -57,4 +63,27 @@ dependencyManagement {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+jacocoTestReport {
+    dependsOn test // 테스트 후 리포트 생성
+
+    reports {
+        xml.required = true
+        csv.required = false
+        html.required = true // HTML 커버리지 리포트 생성
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    '**/dto/**',
+                    '**/config/**',
+                    '**/exception/**',
+                    '**/error/**',
+                    '**/client/**',
+                    '**/AdminServiceApplication.*'
+            ])
+        }))
+    }
 }
