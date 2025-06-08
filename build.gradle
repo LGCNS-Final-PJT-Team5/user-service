@@ -80,9 +80,12 @@ jacocoTestReport {
                     '**/dto/**',
                     '**/config/**',
                     '**/exception/**',
+                    '**/handler/**',
+                    '**/domain/**',
+                    '**/util/**',
                     '**/error/**',
                     '**/client/**',
-                    '**/AdminServiceApplication.*'
+                    '**/UserServiceApplication.*'
             ])
         }))
     }
